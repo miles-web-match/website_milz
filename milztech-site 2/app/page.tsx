@@ -189,7 +189,7 @@ const dict = {
     nav_about: "About",
     nav_service: "Service",
     nav_contact: "Contact",
-    hero_tagline: "静寂に、知性が動く。",
+    hero_tagline: "",
     about_title: "Quiet Intelligence",
     about_body:
       "私たちは、テクノロジーとクリエイティビティの交差点で体験の美学を設計します。余白、タイポグラフィ、そして静かに息づくモーション。騒がしくない未来を、丁寧に。",
@@ -210,7 +210,7 @@ const dict = {
     nav_about: "About",
     nav_service: "Service",
     nav_contact: "Contact",
-    hero_tagline: "Where silence moves intelligence.",
+    hero_tagline: "",
     about_title: "Quiet Intelligence",
     about_body:
       "We design the aesthetic of experience at the intersection of technology and creativity: whitespace, typography, and calm motion—crafting a future without noise.",
