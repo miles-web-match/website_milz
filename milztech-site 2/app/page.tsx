@@ -1,10 +1,43 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function QuietIntelligenceSite() {
   const [lang, setLang] = useState<"ja" | "en">("ja");
   const t = (k: keyof typeof dict["ja"]) => dict[lang][k];
+
+  // --- safe language persistence ---
+  const safeGetLang = () => {
+    try {
+      if (typeof window !== "undefined" && window?.localStorage) {
+        const v = window.localStorage.getItem("milz_lang");
+        if (v === "ja" || v === "en") return v as "ja" | "en";
+      }
+    } catch {}
+    return null;
+  };
+  const detectBrowserLang = () => {
+    try {
+      const code =
+        typeof navigator !== "undefined" && typeof navigator.language === "string"
+          ? navigator.language
+          : "";
+      return code.toLowerCase().startsWith("ja") ? "ja" : "en";
+    } catch {}
+    return "en" as const;
+  };
+  useEffect(() => {
+    const stored = safeGetLang();
+    setLang(stored ?? detectBrowserLang());
+  }, []);
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined" && window?.localStorage) {
+        window.localStorage.setItem("milz_lang", lang);
+      }
+    } catch {}
+  }, [lang]);
 
   const glowBg = useMemo(
     () =>
@@ -17,40 +50,49 @@ export default function QuietIntelligenceSite() {
 
   return (
     <main className="min-h-screen bg-[#0C0C0C] text-[#EAEAEA] selection:bg-white/10 selection:text-white">
+      {/* NAV */}
       <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-black/30 border-b border-white/10">
         <div className="mx-auto max-w-6xl px-6 h-14 flex items-center justify-between">
-          <a href="#top" className="text-xs tracking-[0.3em] text-white/70 hover:text-white">Milztech</a>
+          <a href="#top" className="text-xs tracking-[0.3em] text-white/70 hover:text-white">
+            Milztech
+          </a>
           <nav className="hidden md:flex items-center gap-6 text-sm text-white/70">
-            <a href="#about" className="hover:text-white">{t("nav_about")}</a>
-            <a href="#service" className="hover:text-white">{t("nav_service")}</a>
-            <a href="#contact" className="hover:text-white">{t("nav_contact")}</a>
+            <a href="#about" className="hover:text-white">
+              {t("nav_about")}
+            </a>
+            <a href="#service" className="hover:text-white">
+              {t("nav_service")}
+            </a>
+            <a href="#contact" className="hover:text-white">
+              {t("nav_contact")}
+            </a>
           </nav>
           <LangToggle lang={lang} setLang={setLang} />
         </div>
       </header>
 
+      {/* HERO */}
       <section id="top" className="relative h-[80vh] md:h-screen flex items-center justify-center overflow-hidden">
+        {/* breathing glow */}
         <motion.div
           className="absolute -inset-40"
           style={{ backgroundImage: glowBg, filter: "blur(20px)" }}
           animate={{ opacity: [0.4, 0.7, 0.4] }}
           transition={{ duration: 8, repeat: Infinity }}
         />
+        {/* title */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.4, ease: "easeOut" }}
           className="relative z-10 text-center px-6 flex flex-col items-center"
         >
-          <div className="mb-4 text-[11px] tracking-[0.45em] text-white/60">
-            AI · EXPERIENCE · SKILL
-          </div>
-          <h1 className="text-3xl md:text-6xl font-light tracking-wider leading-tight">
-            CREATIVITY & TECHNOLOGY
-          </h1>
+          <div className="mb-4 text-[11px] tracking-[0.45em] text-white/60">AI · EXPERIENCE · SKILL</div>
+          <h1 className="text-3xl md:text-6xl font-light tracking-wider leading-tight">CREATIVITY & TECHNOLOGY</h1>
           <p className="mt-3 md:mt-4 text-sm md:text-base text-white/60">{t("hero_tagline")}</p>
         </motion.div>
 
+        {/* subtle cursor light */}
         <div
           className="pointer-events-none absolute inset-0 [mask-image:radial-gradient(400px_400px_at_var(--x)_var(--y),black,transparent)]"
           id="cursorMask"
@@ -58,27 +100,58 @@ export default function QuietIntelligenceSite() {
         <script
           dangerouslySetInnerHTML={{
             __html: `
-            const root = document.getElementById('cursorMask');
-            window.addEventListener('pointermove', (e) => {
-              root?.style.setProperty('--x', e.clientX + 'px');
-              root?.style.setProperty('--y', e.clientY + 'px');
-            });
+            (function(){
+              const root = document.getElementById('cursorMask');
+              if (!root) return;
+              window.addEventListener('pointermove', (e) => {
+                try {
+                  root.style.setProperty('--x', (e.clientX||0) + 'px');
+                  root.style.setProperty('--y', (e.clientY||0) + 'px');
+                } catch {}
+              });
+            })();
           `,
           }}
         />
       </section>
 
+      {/* ABOUT (photo + generative + glow overlay) */}
       <section id="about" className="relative isolate py-16 md:py-24 border-t border-white/10">
         <div className="mx-auto max-w-6xl grid md:grid-cols-2 gap-10 px-6">
+          {/* visual */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.9 }}
-            className="aspect-[4/3] rounded-2xl bg-[#111] ring-1 ring-white/10 overflow-hidden"
+            className="relative aspect-[4/3] rounded-2xl bg-[#111] ring-1 ring-white/10 overflow-hidden"
           >
-            <GenerativeBackdrop />
+            {/* base photo */}
+            <Image
+              src="/about.webp"
+              alt="Milztech process"
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover"
+              priority
+            />
+            {/* generative particles (on top) */}
+            <div className="absolute inset-0">
+              <GenerativeBackdrop />
+            </div>
+            {/* soft cyan/lavender glow blended over the photo */}
+            <div
+              className="absolute inset-0 pointer-events-none mix-blend-screen opacity-30 blend-overlay"
+              style={{
+                backgroundImage: [
+                  `radial-gradient(38rem 28rem at 18% 22%, rgba(108,207,246,0.25), transparent 60%)`,
+                  `radial-gradient(30rem 24rem at 82% 78%, rgba(184,163,229,0.22), transparent 60%)`,
+                ].join(", "),
+              }}
+            />
           </motion.div>
+
+          {/* text */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -92,6 +165,7 @@ export default function QuietIntelligenceSite() {
         </div>
       </section>
 
+      {/* SERVICE (quiet grid) */}
       <section id="service" className="py-14 md:py-20 border-t border-white/10">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mb-6 md:mb-10 flex items-end justify-between">
@@ -125,6 +199,7 @@ export default function QuietIntelligenceSite() {
         </div>
       </section>
 
+      {/* CONTACT */}
       <section id="contact" className="py-16 md:py-24 border-t border-white/10">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <h3 className="text-lg md:text-2xl font-light tracking-wide">{t("contact_title")}</h3>
@@ -140,10 +215,12 @@ export default function QuietIntelligenceSite() {
         </div>
       </section>
 
+      {/* FOOTER */}
       <footer className="py-14 border-t border-white/10 text-center text-white/50 text-xs">
         ©2025 Milztech — Creativity & Technology
       </footer>
 
+      {/* DEV TESTS (run only in development) */}
       {process.env.NODE_ENV !== "production" && <DevTests />}
     </main>
   );
@@ -275,27 +352,47 @@ function GenerativeBackdrop() {
           }
           raf = requestAnimationFrame(loop);
         };
-        const ro = new (window as any).ResizeObserver(resize);
-        ro.observe(c);
+        let ro: ResizeObserver | null = null;
+        const RO = (window as any).ResizeObserver;
+        if (RO) {
+          ro = new RO(resize);
+          ro.observe(c);
+        }
         loop();
         return () => {
           cancelAnimationFrame(raf);
-          ro.disconnect();
+          if (ro) ro.disconnect();
         };
       }}
     />
   );
 }
 
+/** Dev-only sanity tests */
 function DevTests() {
   useEffect(() => {
     console.group("[DevTests] QuietIntelligenceSite");
     try {
       const required = [
-        "nav_about","nav_service","nav_contact","hero_tagline","about_title","about_body","service_title","items","svc_ai","svc_pv","svc_travel","contact_title","contact_body","contact_cta"
+        "nav_about",
+        "nav_service",
+        "nav_contact",
+        "hero_tagline",
+        "about_title",
+        "about_body",
+        "service_title",
+        "items",
+        "svc_ai",
+        "svc_pv",
+        "svc_travel",
+        "contact_title",
+        "contact_body",
+        "contact_cta",
       ];
       Object.keys(dict).forEach((lng) => {
-        required.forEach((k) => console.assert(k in (dict as any)[lng], `Missing key "${k}" in lang ${lng}`));
+        required.forEach((k) =>
+          console.assert(k in (dict as any)[lng], `Missing key "${k}" in lang ${lng}`)
+        );
       });
       console.assert(serviceItems.length === 3, "Expected 3 service items");
       console.assert(serviceItems.includes("AI Solution"), 'Service "AI Solution" missing');
@@ -303,13 +400,25 @@ function DevTests() {
       console.assert(heroBadgeOk, 'Expected hero badge "AI · EXPERIENCE · SKILL"');
       const heroTitleOk = document.body.textContent?.includes("CREATIVITY & TECHNOLOGY");
       console.assert(heroTitleOk, 'Expected hero title "CREATIVITY & TECHNOLOGY"');
-      const brandOk = document.body.textContent?.includes("Milztech") && !document.body.textContent?.includes("Milztech.inc");
+      const brandOk =
+        document.body.textContent?.includes("Milztech") &&
+        !document.body.textContent?.includes("Milztech.inc");
       console.assert(brandOk, 'Brand should be "Milztech" (no .inc)');
-      const anchors = Array.from(document.querySelectorAll('a[href^="/service/"]'));
-      const hrefs = anchors.map(a => a.getAttribute('href'));
-      console.assert(hrefs.includes('/service/ai'), 'Missing /service/ai link');
-      console.assert(hrefs.includes('/service/photo-video'), 'Missing /service/photo-video link');
-      console.assert(hrefs.includes('/service/travel'), 'Missing /service/travel link');
+
+      const anchors = Array.from(
+        document.querySelectorAll('a[href^="/service/"]')
+      ) as HTMLAnchorElement[];
+      const hrefs = anchors.map((a) => a.getAttribute("href"));
+      console.assert(hrefs.includes("/service/ai"), "Missing /service/ai link");
+      console.assert(hrefs.includes("/service/photo-video"), "Missing /service/photo-video link");
+      console.assert(hrefs.includes("/service/travel"), "Missing /service/travel link");
+
+      // New tests (non-breaking)
+      const overlay = document.querySelector("#about .blend-overlay");
+      console.assert(!!overlay, "Expected cyan/lavender blend overlay in #about");
+      const maskEl = document.getElementById("cursorMask");
+      console.assert(!!maskEl, "Expected #cursorMask for subtle cursor light");
+
       console.log("All dev tests passed ✔");
     } catch (e) {
       console.error(e);
