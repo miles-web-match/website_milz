@@ -87,7 +87,7 @@ export default function QuietIntelligenceSite() {
           transition={{ duration: 1.4, ease: "easeOut" }}
           className="relative z-10 text-center px-6 flex flex-col items-center"
         >
-          <div className="mb-4 text-[11px] tracking-[0.45em] text-white/60">AI · EXPERIENCE · SKILL</div>
+          <div className="mb-4 text-[11px] tracking-[0.45em] text-white/60">AI · EXPERIENCE · EXTREME</div>
           <h1 className="text-3xl md:text-6xl font-light tracking-wider leading-tight">CREATIVITY & TECHNOLOGY</h1>
           <p className="mt-3 md:mt-4 text-sm md:text-base text-white/60">{t("hero_tagline")}</p>
         </motion.div>
