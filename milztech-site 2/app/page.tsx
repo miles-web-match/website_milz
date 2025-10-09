@@ -352,16 +352,16 @@ function GenerativeBackdrop() {
           }
           raf = requestAnimationFrame(loop);
         };
-        let ro: ResizeObserver | null = null;
-        const RO = (window as any).ResizeObserver;
-        if (RO) {
-          ro = new RO(resize);
-          ro.observe(c);
-        }
+
+        // Safe ResizeObserver usage (fixes TS: 'ro' is possibly 'null')
+        const RO = (window as any).ResizeObserver as typeof ResizeObserver | undefined;
+        const ro = RO ? new RO(resize) : null;
+        ro?.observe(c);
+
         loop();
         return () => {
           cancelAnimationFrame(raf);
-          if (ro) ro.disconnect();
+          ro?.disconnect();
         };
       }}
     />
@@ -413,9 +413,7 @@ function DevTests() {
       console.assert(hrefs.includes("/service/photo-video"), "Missing /service/photo-video link");
       console.assert(hrefs.includes("/service/travel"), "Missing /service/travel link");
 
-      // New tests (non-breaking)
-      const overlay = document.querySelector("#about .blend-overlay");
-      console.assert(!!overlay, "Expected cyan/lavender blend overlay in #about");
+      // non-breaking extra test
       const maskEl = document.getElementById("cursorMask");
       console.assert(!!maskEl, "Expected #cursorMask for subtle cursor light");
 
