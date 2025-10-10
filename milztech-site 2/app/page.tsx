@@ -183,9 +183,22 @@ export default function QuietIntelligenceSite() {
                 className="group rounded-2xl overflow-hidden ring-1 ring-white/10 bg-[#111]"
               >
                 <a href={serviceHref(title)} className="block focus:outline-none focus:ring-2 focus:ring-white/30">
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <PlaceholderVisual index={i} />
-                  </div>
+<div className="relative aspect-[4/3] overflow-hidden">
+  {title === "Photo & Video" ? (
+    <Image
+      src="/pv-01.webp"                   // ← public/pv-01.webp を使う
+      alt="Milztech — Photo & Video"
+      fill
+      sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+      className="object-cover transition-transform duration-500 group-hover:scale-105"
+    />
+  ) : (
+    <PlaceholderVisual index={i} />
+  )}
+  {/* 読みやすいよう下部に薄いグラデだけ被せる（好みで外してOK） */}
+  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/30" />
+</div>
+
                   <div className="p-4">
                     <div className="text-sm tracking-wide mb-1">{title}</div>
                     <p className="text-xs text-white/60 leading-6">
