@@ -184,7 +184,17 @@ export default function QuietIntelligenceSite() {
               >
                 <a href={serviceHref(title)} className="block focus:outline-none focus:ring-2 focus:ring-white/30">
 <div className="relative aspect-[4/3] overflow-hidden">
-  <Image src="/about.webp" alt="Milztech service visual" fill sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+  {title === "Production" ? (
+    <Image
+      src="/pv-01.webp"                   // ← public/pv-01.webp を使う
+      alt="Milztech — Photo & Video"
+      fill
+      sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+      className="object-cover transition-transform duration-500 group-hover:scale-105"
+    />
+  ) : (
+    <PlaceholderVisual index={i} />
+  )}
   {/* 読みやすいよう下部に薄いグラデだけ被せる（好みで外してOK） */}
   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/30" />
 </div>
@@ -233,10 +243,10 @@ function serviceHref(title: (typeof serviceItems)[number]) {
   switch (title) {
     case "AI Solution":
       return "/service/ai";
-    case "Photo & Video":
-      return "/service/production";
+    case "Production":
+      return "/service/photo-video";
     default:
-      return "/service/experience";
+      return "/service/travel";
   }
 }
 
@@ -413,8 +423,8 @@ function DevTests() {
       ) as HTMLAnchorElement[];
       const hrefs = anchors.map((a) => a.getAttribute("href"));
       console.assert(hrefs.includes("/service/ai"), "Missing /service/ai link");
-      console.assert(hrefs.includes("/service/production"), "Missing /service/production link");
-      console.assert(hrefs.includes("/service/experience"), "Missing /service/experience link");
+      console.assert(hrefs.includes("/service/photo-video"), "Missing /service/photo-video link");
+      console.assert(hrefs.includes("/service/travel"), "Missing /service/travel link");
 
       // non-breaking extra test
       const maskEl = document.getElementById("cursorMask");
