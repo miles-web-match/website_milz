@@ -7,7 +7,7 @@ export default function QuietIntelligenceSite() {
   const [lang, setLang] = useState<"ja" | "en">("ja");
   const t = (k: keyof typeof dict["ja"]) => dict[lang][k];
 
-  // --- safe language persistence ---
+  // safe localStorage load
   const safeGetLang = () => {
     try {
       if (typeof window !== "undefined" && window?.localStorage) {
@@ -17,20 +17,24 @@ export default function QuietIntelligenceSite() {
     } catch {}
     return null;
   };
+
   const detectBrowserLang = () => {
     try {
       const code =
-        typeof navigator !== "undefined" && typeof navigator.language === "string"
+        typeof navigator !== "undefined" &&
+        typeof navigator.language === "string"
           ? navigator.language
           : "";
       return code.toLowerCase().startsWith("ja") ? "ja" : "en";
     } catch {}
     return "en" as const;
   };
+
   useEffect(() => {
     const stored = safeGetLang();
     setLang(stored ?? detectBrowserLang());
   }, []);
+
   useEffect(() => {
     try {
       if (typeof window !== "undefined" && window?.localStorage) {
@@ -50,6 +54,7 @@ export default function QuietIntelligenceSite() {
 
   return (
     <main className="min-h-screen bg-[#0C0C0C] text-[#EAEAEA] selection:bg-white/10 selection:text-white">
+
       {/* NAV */}
       <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-black/30 border-b border-white/10">
         <div className="mx-auto max-w-6xl px-6 h-14 flex items-center justify-between">
@@ -57,68 +62,70 @@ export default function QuietIntelligenceSite() {
             Milztech
           </a>
           <nav className="hidden md:flex items-center gap-6 text-sm text-white/70">
-            <a href="#about" className="hover:text-white">
-              {t("nav_about")}
-            </a>
-            <a href="#service" className="hover:text-white">
-              {t("nav_service")}
-            </a>
-            <a href="#contact" className="hover:text-white">
-              {t("nav_contact")}
-            </a>
+            <a href="#about" className="hover:text-white">{t("nav_about")}</a>
+            <a href="#service" className="hover:text-white">{t("nav_service")}</a>
+            <a href="#contact" className="hover:text-white">{t("nav_contact")}</a>
           </nav>
           <LangToggle lang={lang} setLang={setLang} />
         </div>
       </header>
 
       {/* HERO */}
-      <section id="top" className="relative h-[80vh] md:h-screen flex items-center justify-center overflow-hidden">
-        {/* breathing glow */}
+      <section
+        id="top"
+        className="relative h-[80vh] md:h-screen flex items-center justify-center overflow-hidden"
+      >
         <motion.div
           className="absolute -inset-40"
           style={{ backgroundImage: glowBg, filter: "blur(20px)" }}
           animate={{ opacity: [0.4, 0.7, 0.4] }}
           transition={{ duration: 8, repeat: Infinity }}
         />
-        {/* title */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.4, ease: "easeOut" }}
           className="relative z-10 text-center px-6 flex flex-col items-center"
         >
-          <div className="mb-4 text-[11px] tracking-[0.45em] text-white/60">AI · EXPERIENCE · EXTREME</div>
-          <h1 className="text-3xl md:text-6xl font-light tracking-wider leading-tight">CREATIVITY & TECHNOLOGY</h1>
-          <p className="mt-3 md:mt-4 text-sm md:text-base text-white/60">{t("hero_tagline")}</p>
+          <div className="mb-4 text-[11px] tracking-[0.45em] text-white/60">
+            AI · EXPERIENCE · EXTREME
+          </div>
+          <h1 className="text-3xl md:text-6xl font-light tracking-wider leading-tight">
+            CREATIVITY & TECHNOLOGY
+          </h1>
+          <p className="mt-3 md:mt-4 text-sm md:text-base text-white/60">
+            {t("hero_tagline")}
+          </p>
         </motion.div>
 
-        {/* subtle cursor light */}
+        {/* subtle cursor mask */}
         <div
-          className="pointer-events-none absolute inset-0 [mask-image:radial-gradient(400px_400px_at_var(--x)_var(--y),black,transparent)]"
           id="cursorMask"
+          className="pointer-events-none absolute inset-0 [mask-image:radial-gradient(400px_400px_at_var(--x)_var(--y),black,transparent)]"
         />
         <script
           dangerouslySetInnerHTML={{
             __html: `
-            (function(){
-              const root = document.getElementById('cursorMask');
-              if (!root) return;
-              window.addEventListener('pointermove', (e) => {
-                try {
-                  root.style.setProperty('--x', (e.clientX||0) + 'px');
-                  root.style.setProperty('--y', (e.clientY||0) + 'px');
-                } catch {}
-              });
-            })();
-          `,
+              (function(){
+                const root = document.getElementById('cursorMask');
+                if (!root) return;
+                window.addEventListener('pointermove', (e) => {
+                  try {
+                    root.style.setProperty('--x', (e.clientX||0) + 'px');
+                    root.style.setProperty('--y', (e.clientY||0) + 'px');
+                  } catch {}
+                });
+              })();
+            `,
           }}
         />
       </section>
 
-      {/* ABOUT (photo + generative + glow overlay) */}
+      {/* ABOUT */}
       <section id="about" className="relative isolate py-16 md:py-24 border-t border-white/10">
         <div className="mx-auto max-w-6xl grid md:grid-cols-2 gap-10 px-6">
-          {/* visual */}
+
+          {/* Visual */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -126,22 +133,19 @@ export default function QuietIntelligenceSite() {
             transition={{ duration: 0.9 }}
             className="relative aspect-[4/3] rounded-2xl bg-[#111] ring-1 ring-white/10 overflow-hidden"
           >
-            {/* base photo */}
             <Image
               src="/about.webp"
               alt="Milztech process"
               fill
-              sizes="(min-width: 768px) 50vw, 100vw"
+              sizes="(min-width:768px) 50vw, 100vw"
               className="object-cover"
               priority
             />
-            {/* generative particles (on top) */}
             <div className="absolute inset-0">
               <GenerativeBackdrop />
             </div>
-            {/* soft cyan/lavender glow blended over the photo */}
             <div
-              className="absolute inset-0 pointer-events-none mix-blend-screen opacity-30 blend-overlay"
+              className="absolute inset-0 pointer-events-none mix-blend-screen opacity-30"
               style={{
                 backgroundImage: [
                   `radial-gradient(38rem 28rem at 18% 22%, rgba(108,207,246,0.25), transparent 60%)`,
@@ -151,7 +155,7 @@ export default function QuietIntelligenceSite() {
             />
           </motion.div>
 
-          {/* text */}
+          {/* Text */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -165,13 +169,14 @@ export default function QuietIntelligenceSite() {
         </div>
       </section>
 
-      {/* SERVICE (quiet grid) */}
+      {/* SERVICE */}
       <section id="service" className="py-14 md:py-20 border-t border-white/10">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mb-6 md:mb-10 flex items-end justify-between">
             <h3 className="text-lg md:text-2xl font-light tracking-wide">{t("service_title")}</h3>
             <span className="text-xs text-white/50">3 {t("items")}</span>
           </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {serviceItems.map((title, i) => (
               <motion.article
@@ -183,21 +188,21 @@ export default function QuietIntelligenceSite() {
                 className="group rounded-2xl overflow-hidden ring-1 ring-white/10 bg-[#111]"
               >
                 <a href={serviceHref(title)} className="block focus:outline-none focus:ring-2 focus:ring-white/30">
-<div className="relative aspect-[4/3] overflow-hidden">
-  <PlaceholderVisual index={i} />
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    {/* ✅ 全部 PlaceholderVisual */}
+                    <PlaceholderVisual index={i} />
 
-  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/30" />
-</div>
-
-  )}
-  {/* 読みやすいよう下部に薄いグラデだけ被せる（好みで外してOK） */}
-  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/30" />
-</div>
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/30" />
+                  </div>
 
                   <div className="p-4">
                     <div className="text-sm tracking-wide mb-1">{title}</div>
                     <p className="text-xs text-white/60 leading-6">
-                      {title === "AI Solution" ? t("svc_ai") : title === "Production" ? t("svc_pv") : t("svc_travel")}
+                      {title === "AI Solution"
+                        ? t("svc_ai")
+                        : title === "Production"
+                        ? t("svc_pv")
+                        : t("svc_travel")}
                     </p>
                   </div>
                 </a>
@@ -223,12 +228,10 @@ export default function QuietIntelligenceSite() {
         </div>
       </section>
 
-      {/* FOOTER */}
       <footer className="py-14 border-t border-white/10 text-center text-white/50 text-xs">
         ©2025 Milztech — Creativity & Technology
       </footer>
 
-      {/* DEV TESTS (run only in development) */}
       {process.env.NODE_ENV !== "production" && <DevTests />}
     </main>
   );
@@ -245,12 +248,20 @@ function serviceHref(title: (typeof serviceItems)[number]) {
   }
 }
 
-function LangToggle({ lang, setLang }: { lang: "ja" | "en"; setLang: (v: "ja" | "en") => void }) {
+function LangToggle({
+  lang,
+  setLang,
+}: {
+  lang: "ja" | "en";
+  setLang: (v: "ja" | "en") => void;
+}) {
   return (
     <div className="flex items-center gap-2 text-xs">
       <button
         onClick={() => setLang("ja")}
-        className={`px-2 py-1 rounded ${lang === "ja" ? "bg-white/10 text-white" : "text-white/60 hover:text-white"}`}
+        className={`px-2 py-1 rounded ${
+          lang === "ja" ? "bg-white/10 text-white" : "text-white/60 hover:text-white"
+        }`}
         aria-pressed={lang === "ja"}
       >
         JA
@@ -258,7 +269,9 @@ function LangToggle({ lang, setLang }: { lang: "ja" | "en"; setLang: (v: "ja" | 
       <span className="text-white/30">/</span>
       <button
         onClick={() => setLang("en")}
-        className={`px-2 py-1 rounded ${lang === "en" ? "bg-white/10 text-white" : "text-white/60 hover:text-white"}`}
+        className={`px-2 py-1 rounded ${
+          lang === "en" ? "bg-white/10 text-white" : "text-white/60 hover:text-white"
+        }`}
         aria-pressed={lang === "en"}
       >
         EN
@@ -323,7 +336,9 @@ function PlaceholderVisual({ index }: { index: number }) {
       style={{
         background:
           `radial-gradient(24rem 16rem at 30% 30%, hsla(${h}, 90%, 62%, .12), transparent 60%),` +
-          `radial-gradient(18rem 14rem at 70% 70%, hsla(${(h + 40) % 360}, 80%, 62%, .10), transparent 60%),` +
+          `radial-gradient(18rem 14rem at 70% 70%, hsla(${
+            (h + 40) % 360
+          }, 80%, 62%, .10), transparent 60%),` +
           `linear-gradient(180deg, #0f0f0f, #0c0c0c)`,
       }}
     />
@@ -339,13 +354,16 @@ function GenerativeBackdrop() {
         if (!c) return;
         const ctx = c.getContext("2d");
         const dpr = Math.max(1, (window as any).devicePixelRatio || 1);
+
         const resize = () => {
           c.width = c.clientWidth * dpr;
           c.height = c.clientHeight * dpr;
         };
+
         resize();
         let t = 0;
         let raf = 0;
+
         const loop = () => {
           if (!ctx) return;
           t += 0.006;
@@ -361,8 +379,9 @@ function GenerativeBackdrop() {
           raf = requestAnimationFrame(loop);
         };
 
-        // Safe ResizeObserver usage (fixes TS: 'ro' is possibly 'null')
-        const RO = (window as any).ResizeObserver as typeof ResizeObserver | undefined;
+        const RO = (window as any).ResizeObserver as
+          | typeof ResizeObserver
+          | undefined;
         const ro = RO ? new RO(resize) : null;
         ro?.observe(c);
 
@@ -376,7 +395,6 @@ function GenerativeBackdrop() {
   );
 }
 
-/** Dev-only sanity tests */
 function DevTests() {
   useEffect(() => {
     console.group("[DevTests] QuietIntelligenceSite");
@@ -397,17 +415,36 @@ function DevTests() {
         "contact_body",
         "contact_cta",
       ];
+
       Object.keys(dict).forEach((lng) => {
         required.forEach((k) =>
-          console.assert(k in (dict as any)[lng], `Missing key "${k}" in lang ${lng}`)
+          console.assert(
+            k in (dict as any)[lng],
+            `Missing key "${k}" in lang ${lng}`
+          )
         );
       });
+
       console.assert(serviceItems.length === 3, "Expected 3 service items");
-      console.assert(serviceItems.includes("AI Solution"), 'Service "AI Solution" missing');
-      const heroBadgeOk = document.body.textContent?.includes("AI · EXPERIENCE · SKILL");
-      console.assert(heroBadgeOk, 'Expected hero badge "AI · EXPERIENCE · SKILL"');
-      const heroTitleOk = document.body.textContent?.includes("CREATIVITY & TECHNOLOGY");
-      console.assert(heroTitleOk, 'Expected hero title "CREATIVITY & TECHNOLOGY"');
+      console.assert(
+        serviceItems.includes("AI Solution"),
+        'Service "AI Solution" missing'
+      );
+
+      const heroBadgeOk =
+        document.body.textContent?.includes("AI · EXPERIENCE · SKILL");
+      console.assert(
+        heroBadgeOk,
+        'Expected hero badge "AI · EXPERIENCE · SKILL"'
+      );
+
+      const heroTitleOk =
+        document.body.textContent?.includes("CREATIVITY & TECHNOLOGY");
+      console.assert(
+        heroTitleOk,
+        'Expected hero title "CREATIVITY & TECHNOLOGY"'
+      );
+
       const brandOk =
         document.body.textContent?.includes("Milztech") &&
         !document.body.textContent?.includes("Milztech.inc");
@@ -417,11 +454,17 @@ function DevTests() {
         document.querySelectorAll('a[href^="/service/"]')
       ) as HTMLAnchorElement[];
       const hrefs = anchors.map((a) => a.getAttribute("href"));
-      console.assert(hrefs.includes("/service/ai"), "Missing /service/ai link");
-      console.assert(hrefs.includes("/service/photo-video"), "Missing /service/photo-video link");
-      console.assert(hrefs.includes("/service/travel"), "Missing /service/travel link");
 
-      // non-breaking extra test
+      console.assert(hrefs.includes("/service/ai"), "Missing /service/ai link");
+      console.assert(
+        hrefs.includes("/service/photo-video"),
+        "Missing /service/photo-video link"
+      );
+      console.assert(
+        hrefs.includes("/service/travel"),
+        "Missing /service/travel link"
+      );
+
       const maskEl = document.getElementById("cursorMask");
       console.assert(!!maskEl, "Expected #cursorMask for subtle cursor light");
 
@@ -432,5 +475,6 @@ function DevTests() {
       console.groupEnd();
     }
   }, []);
+
   return null;
 }
