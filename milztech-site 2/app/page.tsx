@@ -144,20 +144,36 @@ export default function QuietIntelligenceSite() {
         </div>
       </section>
 
-      {/* ✅ CORE PHILOSOPHY（追加済み） */}
-      <section className="py-24 md:py-32 border-t border-white/10">
-        <div className="mx-auto max-w-3xl px-6 text-center">
+      {/* CORE PHILOSOPHY */}
+<section
+  className="relative py-20 md:py-28 border-t border-white/10 overflow-hidden"
+  id="core"
+>
+  {/* ✅ Hero と同じ淡いグロー背景 */}
+  <div
+    className="absolute inset-0 -z-10"
+    style={{
+      backgroundImage: `
+        radial-gradient(40rem 40rem at 50% 20%, rgba(108,207,246,0.08), transparent 70%),
+        radial-gradient(35rem 35rem at 80% 80%, rgba(184,163,229,0.06), transparent 70%)
+      `,
+      filter: "blur(20px)",
+    }}
+  ></div>
 
-          <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6 whitespace-pre-line">
-            {t("core_title")}
-          </h2>
+  <div className="mx-auto max-w-3xl px-6 text-center">
 
-          <p className="text-white/70 leading-8 whitespace-pre-line">
-            {t("core_body")}
-          </p>
+    <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6">
+      {t("core_title")}
+    </h2>
 
-        </div>
-      </section>
+    <p className="text-white/70 leading-8 whitespace-pre-line">
+      {t("core_body")}
+    </p>
+
+  </div>
+</section>
+
 
       {/* SERVICE */}
       <section id="service" className="py-14 md:py-20 border-t border-white/10">
