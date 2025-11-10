@@ -104,54 +104,60 @@ export default function QuietIntelligenceSite() {
       </section>
 
       {/* ABOUT — Vision */}
-<section
-  id="about"
-  className="relative isolate py-20 md:py-28 border-t border-white/10"
->
-  <div className="mx-auto max-w-6xl grid md:grid-cols-2 gap-14 px-6">
+      <section
+        id="about"
+        className="relative isolate py-20 md:py-28 border-t border-white/10"
+      >
+        <div className="mx-auto max-w-6xl grid md:grid-cols-2 gap-14 px-6">
 
-    {/* Image */}
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.9 }}
-      className="relative aspect-[4/3] rounded-2xl bg-[#111] ring-1 ring-white/10 overflow-hidden"
-    >
-      {/* ✅ 小さな Milztech を削除 → 何も置かない */}
-      <Image
-        src="/about.webp"
-        alt="Milztech process"
-        fill
-        className="object-cover"
-        priority
-      />
-    </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.9 }}
+            className="relative aspect-[4/3] rounded-2xl bg-[#111] ring-1 ring-white/10 overflow-hidden"
+          >
+            <Image
+              src="/about.webp"
+              alt="Milztech process"
+              fill
+              className="object-cover"
+              priority
+            />
+          </motion.div>
 
-    {/* Vision Text */}
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.9, delay: 0.1 }}
-      className="self-start flex flex-col justify-start"
-    >
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.9, delay: 0.1 }}
+            className="self-start flex flex-col justify-start"
+          >
+            <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6 text-center">
+              From Creative Eyes to Intelligent Systems.
+            </h2>
 
-      {/* ✅ Vision タイトル削除 */}
-      {/* ✅ サブタイトルを大きく中央揃えで */}
-      <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6 text-center">
-        From Creative Eyes to Intelligent Systems.
-      </h2>
+            <p className="text-white/70 leading-8 whitespace-pre-line">
+              {t("vision_body").replace("From Creative Eyes to Intelligent Systems.\n", "")}
+            </p>
+          </motion.div>
+        </div>
+      </section>
 
-      {/* ✅ Vision 本文（続き） */}
-      <p className="text-white/70 leading-8 whitespace-pre-line">
-        {t("vision_body").replace("From Creative Eyes to Intelligent Systems.\n", "")}
-      </p>
+      {/* ✅ CORE PHILOSOPHY（追加済み） */}
+      <section className="py-24 md:py-32 border-t border-white/10">
+        <div className="mx-auto max-w-3xl px-6 text-center">
 
-    </motion.div>
-  </div>
-</section>
+          <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6 whitespace-pre-line">
+            {t("core_title")}
+          </h2>
 
+          <p className="text-white/70 leading-8 whitespace-pre-line">
+            {t("core_body")}
+          </p>
+
+        </div>
+      </section>
 
       {/* SERVICE */}
       <section id="service" className="py-14 md:py-20 border-t border-white/10">
@@ -274,16 +280,13 @@ const dict = {
     service_title: "Selected Services",
     items: "items",
 
-    /* NEW — Vision */
     vision_body:
       "From Creative Eyes to Intelligent Systems.\nMILZTECHは、“感性×テクノロジー”を軸にした次世代型クリエイティブ・テックカンパニーです。フォトグラファーとして磨いた観察力、構成力、表現力、それらをAI、データ、そしてデザインに融合させ、人や企業、そして世界をつなぐ新しい「体験のプラットフォーム」を創造します。",
 
-    /* NEW — Core */
     core_title: "極限まで磨く\nAccessibility & Lean Innovation",
     core_body:
       "アートとアルゴリズム、直感とロジック、世界とローカル。\nそのあいだに橋をかけ、すべての人がクリエイティブにアクセスできる社会をつくります。",
 
-    /* Service text */
     svc_ai:
       "生成AI/LLMの設計・プロトタイプ・運用支援。ワークフロー自動化や知識検索、ガバナンス設計まで静かに効く導入を。",
     svc_pv:
@@ -305,11 +308,9 @@ const dict = {
     service_title: "Selected Services",
     items: "items",
 
-    /* NEW — Vision */
     vision_body:
       "From Creative Eyes to Intelligent Systems.\nMILZTECH is a next-generation creative-tech company built on the harmony of sensitivity and technology. The observational, compositional, and expressive abilities we cultivated as photographers are fused with AI, data, and design to create a new “experience platform” that connects people, businesses, and the world.",
 
-    /* NEW — Core */
     core_title: "Extreme Refinement\nAccessibility & Lean Innovation",
     core_body:
       "We bridge art and algorithms, intuition and logic, the global and the local—building a society where everyone can access creativity.",
