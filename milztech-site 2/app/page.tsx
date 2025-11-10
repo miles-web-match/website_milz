@@ -7,7 +7,6 @@ export default function QuietIntelligenceSite() {
   const [lang, setLang] = useState<"ja" | "en">("ja");
   const t = (k: keyof typeof dict["ja"]) => dict[lang][k];
 
-  // safe localStorage load
   const safeGetLang = () => {
     try {
       if (typeof window !== "undefined" && window?.localStorage) {
@@ -98,34 +97,20 @@ export default function QuietIntelligenceSite() {
           </p>
         </motion.div>
 
-        {/* subtle cursor mask */}
         <div
           id="cursorMask"
           className="pointer-events-none absolute inset-0 [mask-image:radial-gradient(400px_400px_at_var(--x)_var(--y),black,transparent)]"
         />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(){
-                const root = document.getElementById('cursorMask');
-                if (!root) return;
-                window.addEventListener('pointermove', (e) => {
-                  try {
-                    root.style.setProperty('--x', (e.clientX||0) + 'px');
-                    root.style.setProperty('--y', (e.clientY||0) + 'px');
-                  } catch {}
-                });
-              })();
-            `,
-          }}
-        />
       </section>
 
-      {/* ABOUT */}
-      <section id="about" className="relative isolate py-16 md:py-24 border-t border-white/10">
-        <div className="mx-auto max-w-6xl grid md:grid-cols-2 gap-10 px-6">
+      {/* ABOUT — Vision */}
+      <section
+        id="about"
+        className="relative isolate py-20 md:py-28 border-t border-white/10"
+      >
+        <div className="mx-auto max-w-6xl grid md:grid-cols-2 gap-14 px-6">
 
-          {/* Visual */}
+          {/* Image */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -133,29 +118,18 @@ export default function QuietIntelligenceSite() {
             transition={{ duration: 0.9 }}
             className="relative aspect-[4/3] rounded-2xl bg-[#111] ring-1 ring-white/10 overflow-hidden"
           >
+            <div className="absolute top-4 inset-x-0 text-center text-white/70 tracking-[0.3em] text-sm z-20">
+              Milztech
+            </div>
             <Image
               src="/about.webp"
               alt="Milztech process"
               fill
-              sizes="(min-width:768px) 50vw, 100vw"
               className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0">
-              <GenerativeBackdrop />
-            </div>
-            <div
-              className="absolute inset-0 pointer-events-none mix-blend-screen opacity-30"
-              style={{
-                backgroundImage: [
-                  `radial-gradient(38rem 28rem at 18% 22%, rgba(108,207,246,0.25), transparent 60%)`,
-                  `radial-gradient(30rem 24rem at 82% 78%, rgba(184,163,229,0.22), transparent 60%)`,
-                ].join(", "),
-              }}
             />
           </motion.div>
 
-          {/* Text */}
+          {/* Vision */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -163,9 +137,28 @@ export default function QuietIntelligenceSite() {
             transition={{ duration: 0.9, delay: 0.1 }}
             className="self-center"
           >
-            <h2 className="text-xl md:text-3xl font-light tracking-wide">{t("about_title")}</h2>
-            <p className="mt-4 text-white/70 leading-8">{t("about_body")}</p>
+            <h2 className="text-xl md:text-3xl font-light tracking-wide mb-3">
+              Vision
+            </h2>
+
+            <p className="text-white/70 leading-8 whitespace-pre-line">
+              {t("vision_body")}
+            </p>
           </motion.div>
+        </div>
+      </section>
+      {/* CORE PHILOSOPHY */}
+      <section className="py-20 md:py-28 border-t border-white/10">
+        <div className="mx-auto max-w-3xl px-6 text-center">
+
+          <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6">
+            {t("core_title")}
+          </h2>
+
+          <p className="text-white/70 leading-8 whitespace-pre-line">
+            {t("core_body")}
+          </p>
+
         </div>
       </section>
 
@@ -188,8 +181,7 @@ export default function QuietIntelligenceSite() {
                 className="group rounded-2xl overflow-hidden ring-1 ring-white/10 bg-[#111]"
               >
                 <a href={serviceHref(title)} className="block focus:outline-none focus:ring-2 focus:ring-white/30">
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    {/* ✅ 全部 PlaceholderVisual */}
+                  <div className="relative aspect-[5/3] overflow-hidden">
                     <PlaceholderVisual index={i} />
 
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/30" />
@@ -288,38 +280,56 @@ const dict = {
     nav_service: "Service",
     nav_contact: "Contact",
     hero_tagline: "",
-    about_title: "Milztech",
-    about_body:
-      "私たちは、テクノロジーとクリエイティビティの交差点で体験の美学を設計します。余白、タイポグラフィ、そして静かに息づくモーション。騒がしくない未来を、丁寧に。",
     service_title: "Selected Services",
     items: "items",
+
+    /* NEW — Vision */
+    vision_body:
+      "From Creative Eyes to Intelligent Systems.\nMILZTECHは、“感性×テクノロジー”を軸にした次世代型クリエイティブ・テックカンパニーです。フォトグラファーとして磨いた観察力、構成力、表現力、それらをAI、データ、そしてデザインに融合させ、人や企業、そして世界をつなぐ新しい「体験のプラットフォーム」を創造します。",
+
+    /* NEW — Core */
+    core_title: "極限まで磨く / Accessibility & Lean Innovation",
+    core_body:
+      "アートとアルゴリズム、直感とロジック、世界とローカル。\nそのあいだに橋をかけ、すべての人がクリエイティブにアクセスできる社会をつくります。",
+
+    /* Service text */
     svc_ai:
       "生成AI/LLMの設計・プロトタイプ・運用支援。ワークフロー自動化や知識検索、ガバナンス設計まで静かに効く導入を。",
     svc_pv:
       "建築・不動産・ブランド向けの撮影/編集。色調は抑制し、素材本来の質感を最大化。動画は静かなモーションで。",
     svc_travel:
       "都市/施設の体験設計と上質なツアー制作。地図・音・光を用いた穏やかなインタラクションを提供。",
+
     contact_title: "お問い合わせ",
     contact_body:
       "まずは簡単にプロジェクトの内容や目標、スケジュール感をお知らせください。静かな体験を一緒に設計します。",
     contact_cta: "メールで相談する",
   },
+
   en: {
     nav_about: "About",
     nav_service: "Service",
     nav_contact: "Contact",
     hero_tagline: "",
-    about_title: "Milztech",
-    about_body:
-      "We design the aesthetic of experience at the intersection of technology and creativity: whitespace, typography, and calm motion—crafting a future without noise.",
     service_title: "Selected Services",
     items: "items",
+
+    /* NEW — Vision */
+    vision_body:
+      "From Creative Eyes to Intelligent Systems.\nMILZTECH is a next-generation creative-tech company built on the harmony of sensitivity and technology. The observational, compositional, and expressive abilities we cultivated as photographers are fused with AI, data, and design to create a new “experience platform” that connects people, businesses, and the world.",
+
+    /* NEW — Core */
+    core_title: "Extreme Refinement / Accessibility & Lean Innovation",
+    core_body:
+      "We bridge art and algorithms, intuition and logic, the global and the local—building a society where everyone can access creativity.",
+
     svc_ai:
       "Designing and operating LLM / generative AI systems: prototyping, workflow automation, retrieval, and governance.",
     svc_pv:
       "Photography & film for architecture, real estate, and brands—restrained grading, honest texture, and calm motion.",
     svc_travel:
       "Experience design and curated travel for cities and venues—maps, sound, and light for gentle interactions.",
+
     contact_title: "Contact",
     contact_body:
       "Tell us briefly about your project, objectives, and timing. We'll craft a calm, intelligent experience together.",
@@ -345,136 +355,6 @@ function PlaceholderVisual({ index }: { index: number }) {
   );
 }
 
-function GenerativeBackdrop() {
-  return (
-    <canvas
-      id="g"
-      className="w-full h-full block"
-      ref={(c) => {
-        if (!c) return;
-        const ctx = c.getContext("2d");
-        const dpr = Math.max(1, (window as any).devicePixelRatio || 1);
-
-        const resize = () => {
-          c.width = c.clientWidth * dpr;
-          c.height = c.clientHeight * dpr;
-        };
-
-        resize();
-        let t = 0;
-        let raf = 0;
-
-        const loop = () => {
-          if (!ctx) return;
-          t += 0.006;
-          ctx.clearRect(0, 0, c.width, c.height);
-          for (let i = 0; i < 1800; i++) {
-            const a = i * 0.007 + t;
-            const r = 90 + 60 * Math.sin(i * 0.003 + t);
-            const x = c.width / 2 + Math.cos(a) * r * dpr;
-            const y = c.height / 2 + Math.sin(a * 1.2) * r * dpr;
-            ctx.fillStyle = `rgba(108,207,246,${0.015})`;
-            ctx.fillRect(x, y, 1, 1);
-          }
-          raf = requestAnimationFrame(loop);
-        };
-
-        const RO = (window as any).ResizeObserver as
-          | typeof ResizeObserver
-          | undefined;
-        const ro = RO ? new RO(resize) : null;
-        ro?.observe(c);
-
-        loop();
-        return () => {
-          cancelAnimationFrame(raf);
-          ro?.disconnect();
-        };
-      }}
-    />
-  );
-}
-
 function DevTests() {
-  useEffect(() => {
-    console.group("[DevTests] QuietIntelligenceSite");
-    try {
-      const required = [
-        "nav_about",
-        "nav_service",
-        "nav_contact",
-        "hero_tagline",
-        "about_title",
-        "about_body",
-        "service_title",
-        "items",
-        "svc_ai",
-        "svc_pv",
-        "svc_travel",
-        "contact_title",
-        "contact_body",
-        "contact_cta",
-      ];
-
-      Object.keys(dict).forEach((lng) => {
-        required.forEach((k) =>
-          console.assert(
-            k in (dict as any)[lng],
-            `Missing key "${k}" in lang ${lng}`
-          )
-        );
-      });
-
-      console.assert(serviceItems.length === 3, "Expected 3 service items");
-      console.assert(
-        serviceItems.includes("AI Solution"),
-        'Service "AI Solution" missing'
-      );
-
-      const heroBadgeOk =
-        document.body.textContent?.includes("AI · EXPERIENCE · SKILL");
-      console.assert(
-        heroBadgeOk,
-        'Expected hero badge "AI · EXPERIENCE · SKILL"'
-      );
-
-      const heroTitleOk =
-        document.body.textContent?.includes("CREATIVITY & TECHNOLOGY");
-      console.assert(
-        heroTitleOk,
-        'Expected hero title "CREATIVITY & TECHNOLOGY"'
-      );
-
-      const brandOk =
-        document.body.textContent?.includes("Milztech") &&
-        !document.body.textContent?.includes("Milztech.inc");
-      console.assert(brandOk, 'Brand should be "Milztech" (no .inc)');
-
-      const anchors = Array.from(
-        document.querySelectorAll('a[href^="/service/"]')
-      ) as HTMLAnchorElement[];
-      const hrefs = anchors.map((a) => a.getAttribute("href"));
-
-      console.assert(hrefs.includes("/service/ai"), "Missing /service/ai link");
-      console.assert(
-        hrefs.includes("/service/photo-video"),
-        "Missing /service/photo-video link"
-      );
-      console.assert(
-        hrefs.includes("/service/travel"),
-        "Missing /service/travel link"
-      );
-
-      const maskEl = document.getElementById("cursorMask");
-      console.assert(!!maskEl, "Expected #cursorMask for subtle cursor light");
-
-      console.log("All dev tests passed ✔");
-    } catch (e) {
-      console.error(e);
-    } finally {
-      console.groupEnd();
-    }
-  }, []);
-
   return null;
 }
