@@ -18,20 +18,29 @@ export default function QuietIntelligenceSite() {
   };
 
   const detectBrowserLang = () => {
-    try {
-      const code =
-        typeof navigator !== "undefined" &&
-        typeof navigator.language === "string"
-          ? navigator.language
-          : "";
-      return code.toLowerCase().startsWith("ja") ? "ja" : "en";
-    } catch {}
-    return "en" as const;
+    if (typeof navigator === "undefined") return null;
+    const lang = navigator.language || navigator.languages?.[0];
+    if (!lang) return null;
+    if (lang.startsWith("ja")) return "ja";
+    if (lang.startsWith("en")) return "en";
+    return null;
   };
 
   useEffect(() => {
     const stored = safeGetLang();
-    setLang(stored ?? detectBrowserLang());
+    if (stored) {
+      setLang(stored);
+      return;
+    }
+    const browser = detectBrowserLang();
+    if (browser) {
+      setLang(browser as "ja" | "en");
+      try {
+        if (typeof window !== "undefined" && window?.localStorage) {
+          window.localStorage.setItem("milz_lang", browser);
+        }
+      } catch {}
+    }
   }, []);
 
   useEffect(() => {
@@ -45,27 +54,44 @@ export default function QuietIntelligenceSite() {
   const glowBg = useMemo(
     () =>
       [
-        "radial-gradient(40rem 40rem at 50% 30%, rgba(108,207,246,0.12), transparent 60%)",
-        "radial-gradient(28rem 28rem at 20% 80%, rgba(184,163,229,0.12), transparent 60%)",
+        "radial-gradient(32rem 32rem at 20% 10%, rgba(56,189,248,0.12), transparent 60%)",
+        "radial-gradient(36rem 36rem at 80% 80%, rgba(180,83,9,0.12), transparent 60%)",
+      ].join(", "),
+    []
+  );
+
+  const subtleBg = useMemo(
+    () =>
+      [
+        "radial-gradient(28rem 28rem at 0% 0%, rgba(56,189,248,0.16), transparent 60%)",
+        "radial-gradient(40rem 40rem at 100% 100%, rgba(180,83,9,0.12), transparent 70%)",
       ].join(", "),
     []
   );
 
   return (
     <main className="min-h-screen bg-[#0C0C0C] text-[#EAEAEA] selection:bg-white/10 selection:text-white">
-
       {/* NAV */}
       <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-black/30 border-b border-white/10">
         <div className="mx-auto max-w-6xl px-6 h-14 flex items-center justify-between">
-          <a href="#top" className="text-xs tracking-[0.3em] text-white/70 hover:text-white">
+          <a
+            href="#top"
+            className="text-xs tracking-[0.3em] text-white/70 hover:text-white"
+          >
             Milztech
           </a>
-          <nav className="hidden md:flex items-center gap-6 text-sm text-white/70">
-            <a href="#about" className="hover:text-white">{t("nav_about")}</a>
-            <a href="#service" className="hover:text-white">{t("nav_service")}</a>
-            <a href="#contact" className="hover:text-white">{t("nav_contact")}</a>
+          <nav className="hidden md:flex items-center gap-6 text-xs text-white/70">
+            <a href="#about" className="hover:text-white">
+              {t("nav_about")}
+            </a>
+            <a href="#service" className="hover:text-white">
+              {t("nav_service")}
+            </a>
+            <a href="#contact" className="hover:text-white">
+              {t("nav_contact")}
+            </a>
           </nav>
-          <LangToggle lang={lang} setLang={setLang} />
+          <LangToggle lang={lang} onChange={setLang} />
         </div>
       </header>
 
@@ -109,7 +135,6 @@ export default function QuietIntelligenceSite() {
         className="relative isolate py-20 md:py-28 border-t border-white/10"
       >
         <div className="mx-auto max-w-6xl grid md:grid-cols-2 gap-14 px-6">
-
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -134,98 +159,94 @@ export default function QuietIntelligenceSite() {
             className="self-start flex flex-col justify-start"
           >
             <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6 text-center">
-              From Creative Eyes /nto Intelligent Systems.
+              From Creative Eyes<br />to Intelligent Systems.
             </h2>
 
             <p className="text-white/70 leading-8 whitespace-pre-line">
-              {t("vision_body").replace("From Creative Eyes to Intelligent Systems.\n", "")}
+              {t("vision_body").replace(
+                "From Creative Eyes to Intelligent Systems.\n",
+                ""
+              )}
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* CORE PHILOSOPHY */}
-<section
-  className="relative py-20 md:py-28 border-t border-white/10 overflow-hidden"
-  id="core"
->
-  {/* ✅ Hero と同じ淡いグロー背景 */}
-  <div
-    className="absolute inset-0 -z-10"
-    style={{
-      backgroundImage: `
-        radial-gradient(40rem 40rem at 50% 20%, rgba(108,207,246,0.08), transparent 70%),
-        radial-gradient(35rem 35rem at 80% 80%, rgba(184,163,229,0.06), transparent 70%)
-      `,
-      filter: "blur(20px)",
-    }}
-  ></div>
-
-  <div className="mx-auto max-w-3xl px-6 text-center">
-
-    <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6">
-      {t("core_title")}
-    </h2>
-
-    <p className="text-white/70 leading-8 whitespace-pre-line">
-      {t("core_body")}
-    </p>
-
-  </div>
-</section>
-
+      <section className="relative py-20 md:py-28 border-t border-white/10 overflow-hidden">
+        <div
+          className="absolute inset-0 -z-10"
+          style={{ backgroundImage: subtleBg, filter: "blur(18px)" }}
+        />
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <h2 className="text-xl md:text-3xl font-light tracking-wide mb-4 whitespace-pre-line">
+            {t("core_title")}
+          </h2>
+          <p className="text-sm md:text-base text-white/70 leading-7 whitespace-pre-line">
+            {t("core_body")}
+          </p>
+        </div>
+      </section>
 
       {/* SERVICE */}
-      <section id="service" className="py-14 md:py-20 border-t border-white/10">
+      <section
+        id="service"
+        className="relative py-20 md:py-28 border-t border-white/10 overflow-hidden"
+      >
         <div className="mx-auto max-w-6xl px-6">
-          <div className="mb-6 md:mb-10 flex items-end justify-between">
-            <h3 className="text-lg md:text-2xl font-light tracking-wide">{t("service_title")}</h3>
-            <span className="text-xs text-white/50">3 {t("items")}</span>
+          <div className="flex items-baseline justify-between gap-4 mb-10">
+            <h2 className="text-lg md:text-xl tracking-[0.3em] text-white/60 uppercase">
+              {t("service_title")}
+            </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {serviceItems.map((title, i) => (
-              <motion.article
-                key={title}
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.05 }}
-                className="group rounded-2xl overflow-hidden ring-1 ring-white/10 bg-[#111]"
-              >
-                <a href={serviceHref(title)} className="block focus:outline-none focus:ring-2 focus:ring-white/30">
-                  <div className="relative aspect-[5/3] overflow-hidden">
-                    <PlaceholderVisual index={i} />
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+            {/* AI Solution */}
+            <ServiceCard
+              href="/service/ai"
+              label="AI Solution"
+              title={t("svc_ai_title")}
+              body={t("svc_ai")}
+              badge="AI / Automation"
+            />
 
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/30" />
-                  </div>
+            {/* Photo & Video */}
+            <ServiceCard
+              href="/service/photo-video"
+              label="Photo & Video"
+              title={t("svc_pv_title")}
+              body={t("svc_pv")}
+              badge="Photography"
+            />
 
-                  <div className="p-4">
-                    <div className="text-sm tracking-wide mb-1">{title}</div>
-                    <p className="text-xs text-white/60 leading-6">
-                      {title === "AI Solution"
-                        ? t("svc_ai")
-                        : title === "Production"
-                        ? t("svc_pv")
-                        : t("svc_travel")}
-                    </p>
-                  </div>
-                </a>
-              </motion.article>
-            ))}
+            {/* Travel */}
+            <ServiceCard
+              href="/service/travel"
+              label="Travel Experience"
+              title={t("svc_travel_title")}
+              body={t("svc_travel")}
+              badge="Experience"
+            />
           </div>
         </div>
       </section>
 
       {/* CONTACT */}
-      <section id="contact" className="py-16 md:py-24 border-t border-white/10">
-        <div className="mx-auto max-w-2xl px-6 text-center">
-          <h3 className="text-lg md:text-2xl font-light tracking-wide">{t("contact_title")}</h3>
-          <p className="mt-4 text-white/70 leading-8">{t("contact_body")}</p>
-          <div className="mt-8">
+      <section
+        id="contact"
+        className="relative py-20 md:py-28 border-t border-white/10 overflow-hidden"
+      >
+        <div className="mx-auto max-w-3xl px-6 text-center space-y-6">
+          <h2 className="text-xl md:text-2xl font-light tracking-wide mb-3">
+            {t("contact_title")}
+          </h2>
+          <p className="text-sm md:text-base text-white/70 leading-7 whitespace-pre-line">
+            {t("contact_body")}
+          </p>
+          <div className="flex justify-center mt-6">
             <a
-              href="mailto:hello@example.com"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-3 text-sm text-white/80 hover:text-white hover:bg-white/5 transition"
+              href="mailto:info@milz.tech"
+              className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-2.5 text-sm text-white/90 hover:bg-white/10 transition-colors"
             >
               {t("contact_cta")}
             </a>
@@ -233,51 +254,36 @@ export default function QuietIntelligenceSite() {
         </div>
       </section>
 
-      <footer className="py-14 border-t border-white/10 text-center text-white/50 text-xs">
-        ©2025 Milztech — Creativity & Technology
+      {/* FOOTER */}
+      <footer className="border-t border-white/10 py-6 text-xs text-white/40 text-center">
+        <p>© {new Date().getFullYear()} Milztech. All rights reserved.</p>
       </footer>
-
-      {process.env.NODE_ENV !== "production" && <DevTests />}
     </main>
   );
 }
 
-function serviceHref(title: (typeof serviceItems)[number]) {
-  switch (title) {
-    case "AI Solution":
-      return "/service/ai";
-    case "Production":
-      return "/service/photo-video";
-    default:
-      return "/service/travel";
-  }
-}
-
 function LangToggle({
   lang,
-  setLang,
+  onChange,
 }: {
   lang: "ja" | "en";
-  setLang: (v: "ja" | "en") => void;
+  onChange: (lang: "ja" | "en") => void;
 }) {
   return (
-    <div className="flex items-center gap-2 text-xs">
+    <div className="flex items-center rounded-full border border-white/20 text-[10px] overflow-hidden">
       <button
-        onClick={() => setLang("ja")}
-        className={`px-2 py-1 rounded ${
-          lang === "ja" ? "bg-white/10 text-white" : "text-white/60 hover:text-white"
+        onClick={() => onChange("ja")}
+        className={`px-3 py-[5px] ${
+          lang === "ja" ? "bg-white text-black" : "text-white/70"
         }`}
-        aria-pressed={lang === "ja"}
       >
         JA
       </button>
-      <span className="text-white/30">/</span>
       <button
-        onClick={() => setLang("en")}
-        className={`px-2 py-1 rounded ${
-          lang === "en" ? "bg-white/10 text-white" : "text-white/60 hover:text-white"
+        onClick={() => onChange("en")}
+        className={`px-3 py-[5px] border-l border-white/20 ${
+          lang === "en" ? "bg-white text-black" : "text-white/70"
         }`}
-        aria-pressed={lang === "en"}
       >
         EN
       </button>
@@ -285,7 +291,45 @@ function LangToggle({
   );
 }
 
-const serviceItems = ["AI Solution", "Production", "Experience"] as const;
+function ServiceCard({
+  href,
+  label,
+  title,
+  body,
+  badge,
+}: {
+  href: string;
+  label: string;
+  title: string;
+  body: string;
+  badge: string;
+}) {
+  return (
+    <motion.a
+      href={href}
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      className="group relative rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.02] p-5 md:p-6 flex flex-col gap-3"
+    >
+      <div className="flex items-center justify-between gap-2 mb-1">
+        <span className="text-xs tracking-[0.25em] text-white/50 uppercase">
+          {label}
+        </span>
+        <span className="inline-flex items-center rounded-full border border-white/20 px-2.5 py-0.5 text-[10px] text-white/70">
+          {badge}
+        </span>
+      </div>
+      <h3 className="text-base md:text-lg font-light tracking-wide">
+        {title}
+      </h3>
+      <p className="text-xs md:text-sm text-white/60 leading-6">{body}</p>
+      <div className="mt-2 text-[11px] text-white/50 group-hover:text-white/80 flex items-center gap-1">
+        <span>View detail</span>
+        <span aria-hidden>↗</span>
+      </div>
+    </motion.a>
+  );
+}
 
 const dict = {
   ja: {
@@ -303,16 +347,21 @@ const dict = {
     core_body:
       "アートとアルゴリズム、直感とロジック、世界とローカル。\nそのあいだに橋をかけ、すべての人がクリエイティブにアクセスできる社会をつくります。",
 
+    svc_ai_title: "静かに効くAIの導入と運用設計",
     svc_ai:
       "生成AI/LLMの設計・プロトタイプ・運用支援。ワークフロー自動化や知識検索、ガバナンス設計まで静かに効く導入を。",
-    svc_pv:
-      "建築・不動産・ブランド向けの撮影/編集。色調は抑制し、素材本来の質感を最大化。動画は静かなモーションで。",
-    svc_travel:
-      "都市/施設の体験設計と上質なツアー制作。地図・音・光を用いた穏やかなインタラクションを提供。",
 
-    contact_title: "お問い合わせ",
+    svc_pv_title: "建築・不動産・ブランドのための撮影",
+    svc_pv:
+      "建築・不動産・ブランドの撮影と編集。色調は抑えつつ、素材の質感と空気感を最大限に引き出すビジュアルを制作します。",
+
+    svc_travel_title: "都市と体験をつなぐデザイン",
+    svc_travel:
+      "都市や施設の体験設計。地図や動線設計、音・光・情報のレイヤーを使い、移動時間や待ち時間も含めて心地よい体験をデザインします。",
+
+    contact_title: "静かに、しかし確かに前進させるために。",
     contact_body:
-      "まずは簡単にプロジェクトの内容や目標、スケジュール感をお知らせください。静かな体験を一緒に設計します。",
+      "プロダクトづくり、オペレーション改善、撮影、体験設計など、まだ言語化しきれていない段階の相談でも構いません。\n要件が固まっていないフェーズから伴走し、必要に応じて小さく検証を重ねながら、一緒に形にしていきます。",
     contact_cta: "メールで相談する",
   },
 
@@ -325,44 +374,27 @@ const dict = {
     items: "items",
 
     vision_body:
-      "From Creative Eyes /nto Intelligent Systems.\nMILZTECH is a next-generation creative-tech company built on the harmony of sensitivity and technology. The observational, compositional, and expressive abilities we cultivated as photographers are fused with AI, data, and design to create a new “experience platform” that connects people, businesses, and the world.",
+      "From Creative Eyes to Intelligent Systems.\nMILZTECH is a next-generation creative tech company built on the harmony of sensitivity and technology. The observational power, composition, and expressive skills refined through photography are integrated with AI, data, and design to create a new “experience platform” that connects people, businesses, and the world.",
 
     core_title: "Extreme Refinement\nAccessibility & Lean Innovation",
     core_body:
       "We bridge art and algorithms, intuition and logic, the global and the local—building a society where everyone can access creativity.",
 
+    svc_ai_title: "Quietly Effective AI Implementation",
     svc_ai:
-      "Designing and operating LLM / generative AI systems: prototyping, workflow automation, retrieval, and governance.",
+      "Design, prototyping, and operational support for generative AI/LLM. From workflow automation and knowledge search to governance design, we help you introduce AI in a way that quietly but surely works.",
+
+    svc_pv_title: "Photography for Architecture, Real Estate & Brands",
     svc_pv:
-      "Photography & film for architecture, real estate, and brands—restrained grading, honest texture, and calm motion.",
+      "Photography and retouching for architecture, real estate, and brands. We keep the color grading calm and minimal while maximizing material texture and atmosphere.",
+
+    svc_travel_title: "Designing Urban & Spatial Experiences",
     svc_travel:
-      "Experience design and curated travel for cities and venues—maps, sound, and light for gentle interactions.",
+      "Experience design for cities and venues. Using maps, wayfinding, sound, light, and information layers, we design journeys where even transit and waiting become part of a pleasant experience.",
 
-    contact_title: "Contact",
+    contact_title: "Move Forward Quietly, Yet Decisively.",
     contact_body:
-      "Tell us briefly about your project, objectives, and timing. We'll craft a calm, intelligent experience together.",
-    contact_cta: "Email us",
+      "Whether it is product creation, operations improvement, photography, or experience design, you are welcome to come to us even if things are not fully defined yet.\nWe can start from the early, fuzzy phase and gradually give shape to ideas through small, low-risk experiments.",
+    contact_cta: "Contact via Email",
   },
-};
-
-function PlaceholderVisual({ index }: { index: number }) {
-  const hues = [190, 265, 210];
-  const h = hues[index % hues.length];
-  return (
-    <div
-      className="w-full h-full scale-105 transition-transform duration-500 group-hover:scale-110"
-      style={{
-        background:
-          `radial-gradient(24rem 16rem at 30% 30%, hsla(${h}, 90%, 62%, .12), transparent 60%),` +
-          `radial-gradient(18rem 14rem at 70% 70%, hsla(${
-            (h + 40) % 360
-          }, 80%, 62%, .10), transparent 60%),` +
-          `linear-gradient(180deg, #0f0f0f, #0c0c0c)`,
-      }}
-    />
-  );
-}
-
-function DevTests() {
-  return null;
-}
+} as const;
