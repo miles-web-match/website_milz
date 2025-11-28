@@ -134,7 +134,7 @@ export default function QuietIntelligenceSite() {
             className="self-start flex flex-col justify-start"
           >
             <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6 text-center">
-              From Creative Eyes to Intelligent Systems.
+              From Creative Eyes /nto Intelligent Systems.
             </h2>
 
             <p className="text-white/70 leading-8 whitespace-pre-line">
@@ -325,7 +325,7 @@ const dict = {
     items: "items",
 
     vision_body:
-      "From Creative Eyes to Intelligent Systems.\nMILZTECH is a next-generation creative-tech company built on the harmony of sensitivity and technology. The observational, compositional, and expressive abilities we cultivated as photographers are fused with AI, data, and design to create a new “experience platform” that connects people, businesses, and the world.",
+      "From Creative Eyes /nto Intelligent Systems.\nMILZTECH is a next-generation creative-tech company built on the harmony of sensitivity and technology. The observational, compositional, and expressive abilities we cultivated as photographers are fused with AI, data, and design to create a new “experience platform” that connects people, businesses, and the world.",
 
     core_title: "Extreme Refinement\nAccessibility & Lean Innovation",
     core_body:
