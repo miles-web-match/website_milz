@@ -312,7 +312,7 @@ const dict = {
 
     contact_title: "お問い合わせ",
     contact_body:
-      "まずは簡単にプロジェクトの内容や目標、スケジュール感をお知らせください。静かな体験を一緒に設計します。",
+      "まずは簡単にプロジェクトの内容や目標、スケジュール感をお知らせください。",
     contact_cta: "メールで相談する",
   },
 
@@ -340,7 +340,7 @@ const dict = {
 
     contact_title: "Contact",
     contact_body:
-      "Tell us briefly about your project, objectives, and timing. We'll craft a calm, intelligent experience together.",
+      "Tell us briefly about your project, objectives, and timing.",
     contact_cta: "Email us",
   },
 };
