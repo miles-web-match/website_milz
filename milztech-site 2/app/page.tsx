@@ -133,9 +133,10 @@ export default function QuietIntelligenceSite() {
             transition={{ duration: 0.9, delay: 0.1 }}
             className="self-start flex flex-col justify-start"
           >
-            <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6 text-center">
-              From Creative Eyes to Intelligent Systems.
-            </h2>
+<h2 className="text-xl md:text-3xl font-light tracking-wide mb-6 text-center">
+  From Creative Eyes<br />
+  To Intelligent Systems.
+</h2>
 
             <p className="text-white/70 leading-8 whitespace-pre-line">
               {t("vision_body").replace("From Creative Eyes to Intelligent Systems.\n", "")}
