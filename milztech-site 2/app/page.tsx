@@ -162,11 +162,10 @@ export default function QuietIntelligenceSite() {
     }}
   ></div>
 
-  <div className="mx-auto max-w-3xl px-6 text-center">
-
-    <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6">
-      {t("core_title")}
-    </h2>
+<div className="mx-auto max-w-3xl px-6 text-center">
+  <h2 className="text-xl md:text-3xl font-light tracking-wide mb-6 text-center whitespace-pre-line">
+    {t("core_title")}
+  </h2>
 
     <p className="text-white/70 leading-8 whitespace-pre-line">
       {t("core_body")}
